@@ -134,6 +134,19 @@ local function GetMouseOverUnit()
     end
 end
 
+local function IsFishingPoleEquipped()
+    local invSlotId = GetInventorySlotInfo("MainHandSlot");
+    local a = GetInventoryItemLink("player", invSlotId);
+    a = string.sub(a,1+string.find(a,":"),string.len(a));
+    local itemId = string.sub(a,1,string.find(a,":")-1);
+    local sName, sLink, iRarity, iLevel, iMinLevel, sType, sSubType, iStackCount = GetItemInfo(itemId);
+    if sType == "Fishing Pole" then
+        return true
+    else
+        return false
+    end
+end
+
 local function TestConditions(conditions, target)
     local result = true
 
@@ -175,6 +188,10 @@ local function TestConditions(conditions, target)
             result = IsControlKeyDown()
         elseif mod == "alive" then
              result = not (UnitIsDead(target) or UnitIsGhost())
+
+        -- Conditions added for Ironsights
+        elseif mod == "fishing" then
+            result = IsFishingPoleEquipped()
              
         else
             return false
